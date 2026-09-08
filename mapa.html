@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa de Egresados del Máster - Didáctica Web Uruguay</title>
+    <!-- CSS de Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- JS de Leaflet -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8fafc;
+        }
+        #map {
+            height: 100vh;
+            width: 100vw;
+        }
+        .leaflet-popup-content-wrapper {
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .popup-title {
+            margin: 0 0 6px 0;
+            color: #1e3a8a;
+            font-size: 15px;
+            font-weight: bold;
+        }
+        .popup-subtitle {
+            margin: 0 0 6px 0;
+            color: #64748b;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .popup-list {
+            margin: 0;
+            padding-left: 18px;
+            font-size: 13px;
+            color: #1e293b;
+        }
+        .popup-list li {
+            margin-bottom: 3px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="map"></div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Inicializar el mapa centrado en Uruguay
+            const map = L.map('map', {
+                scrollWheelZoom: false // Evita saltos molestos al hacer scroll en Canva
+            }).setView([-32.8000, -55.8000], 7);
+
+            // Capa de mapa base (OpenStreetMap)
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap'
+            }).addTo(map);
+
+            // Nómina oficial de los 23 egresados mapeados en 13 localidades
+            const egresadosPorLocalidad = [
+                { name: "La Paloma", dpto: "Rocha", coords: [-34.6627, -54.1645], egresados: ["Ana Lía Cambón"] },
+                { name: "José Pedro Varela", dpto: "Lavalleja", coords: [-33.4500, -54.5333], egresados: ["Fernando Cabrera"] },
+                { name: "Artigas", dpto: "Artigas", coords: [-30.4000, -56.4667], egresados: ["Rosalynn Tavarez", "Paola Fuques"] },
+                { name: "Salto", dpto: "Salto", coords: [-31.3833, -57.9667], egresados: ["Victoria López"] },
+                { name: "Tacuarembó", dpto: "Tacuarembó", coords: [-31.7333, -55.9833], egresados: ["Ramiro Ramos"] },
+                { name: "Paysandú", dpto: "Paysandú", coords: [-32.3214, -58.0756], egresados: ["Adriana Almirón"] },
+                { name: "Mercedes", dpto: "Soriano", coords: [-33.2528, -58.0306], egresados: ["Mariana Méndez"] },
+                { name: "Montevideo", dpto: "Montevideo", coords: [-34.9011, -56.1645], egresados: ["Stephanie Viera", "María Pallas", "Nadia Pérez", "Uriel Was", "Verónica González"] },
+                { name: "Maldonado", dpto: "Maldonado", coords: [-34.9000, -54.9500], egresados: ["Raquel Escudero", "Andrea Viana", "Fabiana Morales", "Leticia Barrios"] },
+                { name: "Ciudad de la Costa", dpto: "Canelones", coords: [-34.8250, -55.9528], egresados: ["Virginia Gasdía"] },
+                { name: "Salinas", dpto: "Canelones", coords: [-34.7811, -55.8458], egresados: ["Mateo Marques"] },
+                { name: "Santa Rosa", dpto: "Canelones", coords: [-34.4981, -56.0381], egresados: ["Jonnatan González"] },
+                { name: "Canelones", dpto: "Canelones", coords: [-34.5228, -56.2778], egresados: ["Silvina Macarín"] },
+                { name: "San José", dpto: "San José", coords: [-34.3375, -56.7136], egresados: ["Damián Martínez"] }
+            ];
+
+            // Generar marcadores interactivos
+            egresadosPorLocalidad.forEach(loc => {
+                const listaHTML = loc.egresados.map(e => `<li><b>${e}</b></li>`).join('');
+                const popupContent = `
+                    <div style="padding: 2px;">
+                        <h4 class="popup-title">${loc.name} (${loc.dpto})</h4>
+                        <div class="popup-subtitle">Egresados del Máster:</div>
+                        <ul class="popup-list">${listaHTML}</ul>
+                    </div>
+                `;
+                L.marker(loc.coords).addTo(map).bindPopup(popupContent);
+            });
+        });
+    </script>
+</body>
+</html>
